@@ -51,7 +51,7 @@ def create_task_elem(col, row, finished, tasks, primary_window):
             element_uuid = dpg.add_button(label="Add Task", callback=lambda x,y:create_new_task_window(x,tasks, primary_window), tag=col)
             finished[col] = True
         elif type(task) == type(str()):
-            element_uuid = dpg.add_text(task)
+            element_uuid = dpg.add_button(label=task) # bring up modified version of create new task window for callback, access required task by name of list + index of task in list, as arguments to callback?
     else:
         element_uuid = dpg.add_spacer()
     print(finished)
@@ -74,7 +74,7 @@ def setup_tasks_window(data):
                         finished, elem = create_task_elem(col, row, finished, data, primary_window) # todo: put elem in a list somewhere so elements can be overwritten in future
     dpg.set_primary_window(primary_window, True)
 
-    
+
 
 def no_file_window_btn_callback(create_file: bool, window_tag):
     if create_file:
