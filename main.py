@@ -40,6 +40,13 @@ def edit_task(col, row, task_name, task_content, element_to_delete, tasks, prima
     dpg.delete_item(primary_window)
     setup_tasks_window(tasks) # see above for why this does not cause overflow on stack
 
+def delete_task(col, row, edit_task_window, tasks, primary_window):
+    dpg.delete_item(edit_task_window)
+    tasks[col].pop(row)
+    storage_api.write_data(tasks)
+    dpg.delete_item(primary_window)
+    setup_tasks_window(tasks)
+
 def create_task_dialog_window(col, row, task_name, task_content, task_list, primary_window):
     with dpg.window(label=col+"#"+str(row)+" - "+task_name) as edit_task_window:
         #debug
@@ -53,7 +60,9 @@ def create_task_dialog_window(col, row, task_name, task_content, task_list, prim
             dpg.add_table_column()
             with dpg.table_row():
                 dpg.add_button(label="Update Task", callback=lambda:edit_task(col, row, dpg.get_value(title), dpg.get_value(content), edit_task_window, task_list, primary_window))
+                dpg.add_button(label="Delete Task", callback=lambda:delete_task(col, row, edit_task_window, task_list, primary_window))
                 dpg.add_button(label="Cancel", callback=lambda:dpg.delete_item(edit_task_window))
+
 
 def create_task_elem(col, row, finished, tasks, primary_window):
     if not finished[col]:
