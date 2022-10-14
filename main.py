@@ -33,6 +33,28 @@ def create_new_task_window(list_name, tasks, primary_window):
                 dpg.add_button(label="Create New Task",callback=lambda:add_new_task(list_name, tasks, dpg.get_value(title), dpg.get_value(content), create_task_window, primary_window)) # todo:build callback
                 dpg.add_button(label="Cancel",callback=lambda:dpg.delete_item(create_task_window))
 
+def edit_task(col, row, task_name, task_content, element_to_delete, tasks, primary_window):
+    dpg.delete_item(element_to_delete)
+    tasks[col][row] = {"task_name":task_name,"task_desc":task_content}
+    storage_api.write_data(tasks)
+    dpg.delete_item(primary_window)
+    setup_tasks_window(tasks) # see above for why this does not cause overflow on stack
+
+def create_task_dialog_window(col, row, task_name, task_content, task_list, primary_window):
+    with dpg.window(label=col+"#"+str(row)+" - "+task_name) as edit_task_window:
+        #debug
+        col_txt = dpg.add_text(col)
+        row_txt = dpg.add_text(row)
+        #not debug
+        title = dpg.add_input_text(label="Task Title", default_value=task_name)
+        content = dpg.add_input_text(label="Task content", multiline=True, default_value=task_content)
+        with dpg.table(header_row=False):
+            dpg.add_table_column()
+            dpg.add_table_column()
+            with dpg.table_row():
+                dpg.add_button(label="Update Task", callback=lambda:edit_task(col, row, dpg.get_value(title), dpg.get_value(content), edit_task_window, task_list, primary_window))
+                dpg.add_button(label="Cancel", callback=lambda:dpg.delete_item(edit_task_window))
+
 def create_task_elem(col, row, finished, tasks, primary_window):
     if not finished[col]:
         #tasks = storage_api.json.loads('{"To Do": [{"task_name":"spam","task_desc":""},{"task_name":"spam","task_desc":""}],"In Progress":[{"task_name":"ham","task_desc":""}],"Done":[{"task_name":"eggs","task_desc":""},{"task_name":"eggs","task_desc":""},{"task_name":"eggs","task_desc":""}]}')
@@ -43,14 +65,16 @@ def create_task_elem(col, row, finished, tasks, primary_window):
 #            ]
         try:
             task = tasks[col][row]["task_name"]
+            content = tasks[col][row]["task_desc"]
         except IndexError:
             task = None
+            content = None
         print(task)
         if task == None:
             element_uuid = dpg.add_button(label="Add Task", callback=lambda x,y:create_new_task_window(x,tasks, primary_window), tag=col)
             finished[col] = True
         elif type(task) == type(str()):
-            element_uuid = dpg.add_button(label=task) # bring up modified version of create new task window for callback, access required task by name of list + index of task in list, as arguments to callback?
+            element_uuid = dpg.add_button(label=task, callback=lambda:create_task_dialog_window(col, row, task, content, tasks, primary_window)) # bring up modified version of create new task window for callback, access required task by name of list + index of task in list, as arguments to callback?
     else:
         element_uuid = dpg.add_spacer()
     print(finished)
