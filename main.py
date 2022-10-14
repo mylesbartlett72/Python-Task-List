@@ -1,4 +1,3 @@
-from curses import window
 import dearpygui.dearpygui as dpg
 import storage_api
 import sys
