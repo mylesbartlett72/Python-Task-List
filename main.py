@@ -30,7 +30,7 @@ def create_new_task_window(list_name, tasks, primary_window):
             dpg.add_table_column()
             dpg.add_table_column()
             with dpg.table_row():
-                dpg.add_button(label="Create New Task",callback=lambda:add_new_task(list_name, tasks, dpg.get_value(title), dpg.get_value(content), create_task_window, primary_window)) # todo:build callback
+                dpg.add_button(label="Create New Task",callback=lambda:add_new_task(list_name, tasks, dpg.get_value(title), dpg.get_value(content), create_task_window, primary_window))
                 dpg.add_button(label="Cancel",callback=lambda:dpg.delete_item(create_task_window))
 
 def edit_task(col, row, task_name, task_content, element_to_delete, tasks, primary_window):
@@ -66,12 +66,6 @@ def create_task_dialog_window(col, row, task_name, task_content, task_list, prim
 
 def create_task_elem(col, row, finished, tasks, primary_window):
     if not finished[col]:
-        #tasks = storage_api.json.loads('{"To Do": [{"task_name":"spam","task_desc":""},{"task_name":"spam","task_desc":""}],"In Progress":[{"task_name":"ham","task_desc":""}],"Done":[{"task_name":"eggs","task_desc":""},{"task_name":"eggs","task_desc":""},{"task_name":"eggs","task_desc":""}]}')
-#        tasks = [
-#            ["spam", "ham", "eggs"],
-#            ["spam", None, "eggs"],
-#            [None, None, "eggs"]
-#            ]
         try:
             task = tasks[col][row]["task_name"]
             content = tasks[col][row]["task_desc"]
@@ -103,7 +97,7 @@ def setup_tasks_window(data):
             for row in range(0,sorted([len(data[d]) for d in data], reverse=True)[0]+1):
                 with dpg.table_row():
                     for col in ("To Do", "In Progress", "Done"):
-                        finished, elem = create_task_elem(col, row, finished, data, primary_window) # todo: put elem in a list somewhere so elements can be overwritten in future
+                        finished, elem = create_task_elem(col, row, finished, data, primary_window)
     dpg.set_primary_window(primary_window, True)
 
 
