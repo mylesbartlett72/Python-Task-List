@@ -13,12 +13,16 @@ if 0: # debug mode
     dpg.show_font_manager()
     dpg.show_item_registry()
 
-def add_new_task(list_name, tasks, title, desc, create_task_window, primary_window):
+def add_new_task(list_name, tasks, title, desc, create_task_window, primary_window, handle_window_mgmt=True, handle_storage_mgmt=True): # copy new arguemnts to delete task and potentially use in task update
     tasks[list_name].append({"task_name":title,"task_desc":desc})
-    storage_api.write_data(tasks)
-    dpg.delete_item(create_task_window)
-    dpg.delete_item(primary_window)
-    setup_tasks_window(tasks) # turns out this doesnt cause infinite recursion since setup_tasks_window exits - the callbacks are dealt with on a separate thread
+    if handle_storage_mgmt:
+        storage_api.write_data(tasks)
+    else:
+        return tasks
+    if handle_window_mgmt:
+        dpg.delete_item(create_task_window)
+        dpg.delete_item(primary_window)
+        setup_tasks_window(tasks) # turns out this doesnt cause infinite recursion since setup_tasks_window exits - the callbacks are dealt with on a separate thread
 
 def create_new_task_window(list_name, tasks, primary_window):
     with dpg.window(label=f"Create a Task in {list_name}") as create_task_window:
@@ -48,6 +52,7 @@ def delete_task(col, row, edit_task_window, tasks, primary_window):
     setup_tasks_window(tasks)
 
 def create_task_dialog_window(col, row, task_name, task_content, task_list, primary_window):
+    #figure out how to size this properly
     with dpg.window(label=col+"#"+str(row)+" - "+task_name) as edit_task_window:
         #debug
         col_txt = dpg.add_text(col)
@@ -62,6 +67,7 @@ def create_task_dialog_window(col, row, task_name, task_content, task_list, prim
                 dpg.add_button(label="Update Task", callback=lambda:edit_task(col, row, dpg.get_value(title), dpg.get_value(content), edit_task_window, task_list, primary_window))
                 dpg.add_button(label="Delete Task", callback=lambda:delete_task(col, row, edit_task_window, task_list, primary_window))
                 dpg.add_button(label="Cancel", callback=lambda:dpg.delete_item(edit_task_window))
+                #add a move task dialog that will move a task by getting it, adding it to the new list, and removing it from the old one
 
 
 def create_task_elem(col, row, finished, tasks, primary_window):
