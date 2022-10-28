@@ -4,15 +4,6 @@ import sys
 
 dpg.create_context()
 
-if 0: # debug mode
-    dpg.show_documentation()
-    dpg.show_style_editor()
-    dpg.show_debug()
-    dpg.show_about()
-    dpg.show_metrics()
-    dpg.show_font_manager()
-    dpg.show_item_registry()
-
 def add_new_task(list_name, tasks, title, desc, create_task_window = None, primary_window = None, handle_window_mgmt=True, handle_storage_mgmt=True): # copy new arguemnts to delete task and potentially use in task update
     tasks[list_name].append({"task_name":title,"task_desc":desc})
     if handle_storage_mgmt:
