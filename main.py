@@ -13,13 +13,15 @@ if 0: # debug mode
     dpg.show_font_manager()
     dpg.show_item_registry()
 
-def add_new_task(list_name, tasks, title, desc, create_task_window, primary_window, handle_window_mgmt=True, handle_storage_mgmt=True): # copy new arguemnts to delete task and potentially use in task update
+def add_new_task(list_name, tasks, title, desc, create_task_window = None, primary_window = None, handle_window_mgmt=True, handle_storage_mgmt=True): # copy new arguemnts to delete task and potentially use in task update
     tasks[list_name].append({"task_name":title,"task_desc":desc})
     if handle_storage_mgmt:
         storage_api.write_data(tasks)
     else:
         return tasks
     if handle_window_mgmt:
+        if primary_window == None or create_task_window == None:
+            raise ValueError("Tried to handle window management, but failed to pass a window!")
         dpg.delete_item(create_task_window)
         dpg.delete_item(primary_window)
         setup_tasks_window(tasks) # turns out this doesnt cause infinite recursion since setup_tasks_window exits - the callbacks are dealt with on a separate thread
@@ -51,22 +53,42 @@ def delete_task(col, row, edit_task_window, tasks, primary_window):
     dpg.delete_item(primary_window)
     setup_tasks_window(tasks)
 
+def move_task(col, row, task_name, task_content, task_window, task_list, primary_window, direction=False):
+    if col == "To Do":
+        add_new_task("In Progress", task_list, task_name, task_content, handle_storage_mgmt=False, handle_window_mgmt=False)
+    elif col == "In Progress" and direction:
+        add_new_task("Done", task_list, task_name, task_content, handle_storage_mgmt=False, handle_window_mgmt=False)
+    elif col == "In Progress" and not direction:
+        add_new_task("To Do", task_list, task_name, task_content, handle_storage_mgmt=False, handle_window_mgmt=False)
+    else:
+        add_new_task("In Progress", task_list, task_name, task_content, handle_storage_mgmt=False, handle_window_mgmt=False)
+    delete_task(col, row, task_window, task_list, primary_window)
+
+
 def create_task_dialog_window(col, row, task_name, task_content, task_list, primary_window):
     #figure out how to size this properly
-    with dpg.window(label=col+"#"+str(row)+" - "+task_name) as edit_task_window:
-        #debug
-        col_txt = dpg.add_text(col)
-        row_txt = dpg.add_text(row)
+    with dpg.window(label=col+"#"+str(row)+" - "+task_name, min_size=(300, 264)) as edit_task_window:
         #not debug
         title = dpg.add_input_text(label="Task Title", default_value=task_name)
         content = dpg.add_input_text(label="Task content", multiline=True, default_value=task_content)
         with dpg.table(header_row=False):
             dpg.add_table_column()
             dpg.add_table_column()
+            dpg.add_table_column()
             with dpg.table_row():
                 dpg.add_button(label="Update Task", callback=lambda:edit_task(col, row, dpg.get_value(title), dpg.get_value(content), edit_task_window, task_list, primary_window))
                 dpg.add_button(label="Delete Task", callback=lambda:delete_task(col, row, edit_task_window, task_list, primary_window))
                 dpg.add_button(label="Cancel", callback=lambda:dpg.delete_item(edit_task_window))
+            with dpg.table_row():
+                if col == "To Do":
+                    dpg.add_spacer()
+                else:
+                    dpg.add_button(arrow=True, callback=lambda:move_task(col, row, dpg.get_value(title), dpg.get_value(content), edit_task_window, task_list, primary_window))
+                dpg.add_text("Move")
+                if col == "Done":
+                    dpg.add_spacer()
+                else:
+                    dpg.add_button(arrow=True, direction=1, callback=lambda:move_task(col, row, dpg.get_value(title), dpg.get_value(content), edit_task_window, task_list, primary_window, True))
                 #add a move task dialog that will move a task by getting it, adding it to the new list, and removing it from the old one
 
 
@@ -132,7 +154,7 @@ except FileNotFoundError:
                 dpg.add_button(label="No", callback=lambda:no_file_window_btn_callback(False, no_file_window))
                 dpg.set_primary_window(no_file_window, True)
 finally:
-    dpg.create_viewport(title='Custom Title', width=600, height=200)
+    dpg.create_viewport(title='Tasks', width=600, height=300)
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()
