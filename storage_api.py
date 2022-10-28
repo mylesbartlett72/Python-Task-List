@@ -11,4 +11,5 @@ def write_data(data, filename = ".tasks.json"):
         json.dump(data, tasks)
 
 def create_file(filename = ".tasks.json"):
-    write_data(json.loads(DEFAULT_FILE_CONTENT), filename)
+    with open(filename, "w") as tasks:
+        tasks.write(DEFAULT_FILE_CONTENT)
