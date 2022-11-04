@@ -8,7 +8,8 @@ A task list application, written in Python3 using the dearpygui library
 Run
 ```shell
 spam@eggs:~$ pip3 install -r requirements.txt
-``` to install dependencies
+```
+to install dependencies<br>
 You may need to substitute pip3 for pip on Windows-based systems.  To use a specific version of python from your system: `/path/to/your/python -m pip` can be used
 
 2)Clone the repository
