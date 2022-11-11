@@ -1,4 +1,6 @@
-if __name__ == "__main__":
+if (
+    __name__ == "__main__"
+):  # prevent the program from doing anything if it is imported (either accidentally or on purpose)
     import dearpygui.dearpygui as dpg
     import storage_api
     import sys
@@ -12,7 +14,7 @@ if __name__ == "__main__":
         desc,
         create_task_window=None,
         primary_window=None,
-        handle_window_mgmt=True,
+        handle_window_mgmt=True,  # todo: update legacy code so that this functions parameter defaults do not have to be set to mutually incompatible settings
         handle_storage_mgmt=True,
     ):  # copy new arguemnts to delete task and potentially use in task update
         tasks[list_name].append({"task_name": title, "task_desc": desc})
@@ -126,7 +128,6 @@ if __name__ == "__main__":
     def create_task_dialog_window(
         col, row, task_name, task_content, task_list, primary_window
     ):
-        # figure out how to size this properly
         with dpg.window(
             label=col + "#" + str(row) + " - " + task_name, min_size=(300, 264)
         ) as edit_task_window:
@@ -163,6 +164,7 @@ if __name__ == "__main__":
                         callback=lambda: dpg.delete_item(edit_task_window),
                     )
                 with dpg.table_row():
+                    # while arrows do not look the nicest, dearpygui does not provide any way to pass unicode strings that I know of
                     if col == "To Do":
                         dpg.add_spacer()
                     else:
@@ -229,6 +231,12 @@ if __name__ == "__main__":
         return (finished, element_uuid)
 
     def setup_tasks_window(data):
+        """Creates the main "window" that lists tasks and contains main user interface elements.
+
+        Arguments:
+            data -- the Python object containing the task list (read from a file using storage_api.py abstractions)
+                A dictionary of lists, each key is the name of the column.  Currently hardcoded to use columns "To Do", "In Progress", and "Done".
+        """  # todo: document data format more exensively
         primary_window = dpg.generate_uuid()
 
         with dpg.window(tag=primary_window):
@@ -254,18 +262,18 @@ if __name__ == "__main__":
             storage_api.create_file()
             data = storage_api.json.loads(
                 storage_api.DEFAULT_FILE_CONTENT
-            )  # no need to read this off disk
+            )  # no need to read this off disk, using json from storage_api so that it can be overriden in one file by importing a compatible module as json.
             dpg.set_primary_window(window_tag, False)
             dpg.delete_item(window_tag)
-            setup_tasks_window(data)
+            setup_tasks_window(data)  # create the actual main windoww
         else:
             sys.exit()
 
     try:
-        data = storage_api.get_data()
-        setup_tasks_window(data)
-    except FileNotFoundError:
-        with dpg.window() as no_file_window:
+        data = storage_api.get_data()  # get the current tasks
+        setup_tasks_window(data)  # create the main window
+    except FileNotFoundError:  # the tasks file does not exist
+        with dpg.window() as no_file_window:  # initialise a prompt to create a new file
             dpg.add_text("The tasks file does not exist.  Create it?")
             with dpg.table(header_row=False):
                 dpg.add_table_column()
@@ -285,7 +293,9 @@ if __name__ == "__main__":
                     )
                     dpg.set_primary_window(no_file_window, True)
     finally:
-        dpg.create_viewport(title="Tasks", width=600, height=300)
+        dpg.create_viewport(
+            title="Tasks", width=600, height=300
+        )  # this is the window seen by the window manager, which dearpygui creates its own virtual "windows" in.
         dpg.setup_dearpygui()
         dpg.show_viewport()
         dpg.start_dearpygui()
