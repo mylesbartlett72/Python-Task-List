@@ -56,6 +56,13 @@ if (
             return tasks
 
     def create_new_task_window(list_name: str, tasks: dict, primary_window: any):
+        """Creates a "add task" window
+
+        Arguments:
+            list_name -- Name of task list (hardcoded to one of "To Do", "In Progress", "Done" elsewhere)
+            tasks -- Python object of tasks
+            primary_window -- dearpygui object tag for primary window (used by callbacks to automatically recreate to allow updating)
+        """
         with dpg.window(label=f"Create a Task in {list_name}") as create_task_window:
             title = dpg.add_input_text(label="Task Title")
             content = dpg.add_input_text(label="Task content", multiline=True)
@@ -109,7 +116,18 @@ if (
             tasks
         )  # see above for why this does not cause overflow on stack
 
-    def delete_task(col: str, row, edit_task_window, tasks, primary_window):
+    def delete_task(
+        col: str, row: int, edit_task_window: any, tasks: dict, primary_window: any
+    ):
+        """Deletes a task
+
+        Arguments:
+            col -- Column of task
+            row -- Row of task
+            edit_task_window -- Window created when clicking on a task title as dearpygui object tag (object with this tag deleted)
+            tasks -- Python object of task list file
+            primary_window -- Primary window as dearpygui object tag (object with this tag deleted, primary window auto recreated)
+        """
         dpg.delete_item(edit_task_window)
         tasks[col].pop(row)
         storage_api.write_data(tasks)
@@ -121,10 +139,10 @@ if (
         row: int,
         task_name: str,
         task_content: str,
-        task_window,
-        task_list,
+        task_window: any,
+        task_list: dict,
         primary_window: any,
-        direction=False,
+        direction: bool = False,
     ):
         if col == "To Do":
             add_new_task(
@@ -165,7 +183,12 @@ if (
         delete_task(col, row, task_window, task_list, primary_window)
 
     def create_task_dialog_window(
-        col: str, row: int, task_name, task_content, task_list, primary_window
+        col: str,
+        row: int,
+        task_name: str,
+        task_content: str,
+        task_list: dict,  # should use better nomenclature or however you spell it anyway
+        primary_window: any,
     ):
         with dpg.window(
             label=col + "#" + str(row) + " - " + task_name, min_size=(300, 264)
@@ -205,7 +228,7 @@ if (
                 with dpg.table_row():
                     # while arrows do not look the nicest, dearpygui does not provide any way to pass unicode strings that I know of
                     if col == "To Do":
-                        dpg.add_spacer()
+                        dpg.add_spacer()  # cannot move task left as there is no column on the left
                     else:
                         dpg.add_button(
                             arrow=True,
@@ -221,7 +244,7 @@ if (
                         )
                     dpg.add_text("Move")
                     if col == "Done":
-                        dpg.add_spacer()
+                        dpg.add_spacer()  # cannot move task right as there is no column on the right
                     else:
                         dpg.add_button(
                             arrow=True,
@@ -237,9 +260,10 @@ if (
                                 True,
                             ),
                         )
-                    # add a move task dialog that will move a task by getting it, adding it to the new list, and removing it from the old one
 
-    def create_task_elem(col: str, row: int, finished, tasks, primary_window):
+    def create_task_elem(
+        col: str, row: int, finished: dict, tasks: dict, primary_window: any
+    ) -> tuple:
         if not finished[col]:
             try:
                 task = tasks[col][row]["task_name"]
@@ -299,7 +323,13 @@ if (
                             )
         dpg.set_primary_window(primary_window, True)
 
-    def no_file_window_btn_callback(create_file: bool, window_tag):
+    def no_file_window_btn_callback(create_file: bool, window_tag: any):
+        """Callback for buttons in the "file not found" window
+
+        Arguments:
+            create_file -- Which button was clicked i.e. do we create a file or just quit?
+            window_tag -- dearpygui object tag for no file window, object with this tag is deleted.
+        """
         if create_file:
             storage_api.create_file()
             data = storage_api.json.loads(
