@@ -8,20 +8,38 @@ if (
     dpg.create_context()
 
     def add_new_task(
-        list_name,
-        tasks,
-        title,
-        desc,
-        create_task_window=None,
-        primary_window=None,
-        handle_window_mgmt=True,  # todo: update legacy code so that this functions parameter defaults do not have to be set to mutually incompatible settings
-        handle_storage_mgmt=True,
+        list_name: str,
+        tasks: dict,
+        title: str,
+        desc: str,
+        create_task_window: any = None,
+        primary_window: any = None,
+        handle_window_mgmt: bool = True,  # todo: update legacy code so that this functions parameter defaults do not have to be set to mutually incompatible settings
+        handle_storage_mgmt: bool = True,
     ):  # copy new arguemnts to delete task and potentially use in task update
+        """Adds a new task to the task list.
+
+        Arguments:
+            list_name -- The name of the list to add a task to
+            tasks -- The task data as a python object
+            title -- Task title
+            desc -- Task description
+
+        Keyword Arguments:
+            create_task_window -- dearpygui object tag for the task create/edit window, which is autodeleted by the function if handle_window_mgmt is True (default: {None})
+            primary_window -- dearpygui object tag for primary window (tasks window) which is set up again (default: {None})
+            handle_window_mgmt -- Automatically delete create_task_window and primary_window.  If this is to be done, their dearpygui tags must be passed to the function. (default: {True})
+
+        Raises:
+            ValueError: If incompatible arguments are passed.  WARNING: DEFAULT ARGUMENTS ARE CURRENTLY INCOMPATIBLE
+
+        Returns:
+            tasks (if not handling storage management) -- the Python object containing the task list (read from a file using storage_api.py abstractions)
+                A dictionary of lists, each key is the name of the column.  Currently hardcoded to use columns "To Do", "In Progress", and "Done".
+        """
         tasks[list_name].append({"task_name": title, "task_desc": desc})
         if handle_storage_mgmt:
             storage_api.write_data(tasks)
-        else:
-            return tasks
         if handle_window_mgmt:
             if primary_window == None or create_task_window == None:
                 raise ValueError(
@@ -32,8 +50,12 @@ if (
             setup_tasks_window(
                 tasks
             )  # turns out this doesnt cause infinite recursion since setup_tasks_window exits - the callbacks are dealt with on a separate thread
+        if (
+            not handle_storage_mgmt
+        ):  # moved to allow handling window management but not storage management.
+            return tasks
 
-    def create_new_task_window(list_name, tasks, primary_window):
+    def create_new_task_window(list_name: str, tasks: dict, primary_window: any):
         with dpg.window(label=f"Create a Task in {list_name}") as create_task_window:
             title = dpg.add_input_text(label="Task Title")
             content = dpg.add_input_text(label="Task content", multiline=True)
@@ -60,8 +82,25 @@ if (
                     )
 
     def edit_task(
-        col, row, task_name, task_content, element_to_delete, tasks, primary_window
+        col: str,
+        row: int,
+        task_name: str,
+        task_content: str,
+        element_to_delete: any,
+        tasks: dict,
+        primary_window: any,
     ):
+        """Edits an existing task
+
+        Arguments:
+            col -- The column name of the task to edit
+            row -- The row of the task to edit
+            task_name -- New name of task
+            task_content -- New task content
+            element_to_delete -- A dearpygui object tag for a dearpygui element to be removed (i.e. the task edit window)
+            tasks -- Python object of tasks
+            primary_window -- A dearpygui object tag for the primary window (which is removed and regenerated)
+        """
         dpg.delete_item(element_to_delete)
         tasks[col][row] = {"task_name": task_name, "task_desc": task_content}
         storage_api.write_data(tasks)
@@ -70,7 +109,7 @@ if (
             tasks
         )  # see above for why this does not cause overflow on stack
 
-    def delete_task(col, row, edit_task_window, tasks, primary_window):
+    def delete_task(col: str, row, edit_task_window, tasks, primary_window):
         dpg.delete_item(edit_task_window)
         tasks[col].pop(row)
         storage_api.write_data(tasks)
@@ -78,13 +117,13 @@ if (
         setup_tasks_window(tasks)
 
     def move_task(
-        col,
-        row,
-        task_name,
-        task_content,
+        col: str,
+        row: int,
+        task_name: str,
+        task_content: str,
         task_window,
         task_list,
-        primary_window,
+        primary_window: any,
         direction=False,
     ):
         if col == "To Do":
@@ -126,7 +165,7 @@ if (
         delete_task(col, row, task_window, task_list, primary_window)
 
     def create_task_dialog_window(
-        col, row, task_name, task_content, task_list, primary_window
+        col: str, row: int, task_name, task_content, task_list, primary_window
     ):
         with dpg.window(
             label=col + "#" + str(row) + " - " + task_name, min_size=(300, 264)
@@ -200,7 +239,7 @@ if (
                         )
                     # add a move task dialog that will move a task by getting it, adding it to the new list, and removing it from the old one
 
-    def create_task_elem(col, row, finished, tasks, primary_window):
+    def create_task_elem(col: str, row: int, finished, tasks, primary_window):
         if not finished[col]:
             try:
                 task = tasks[col][row]["task_name"]
@@ -227,17 +266,19 @@ if (
                 )  # bring up modified version of create new task window for callback, access required task by name of list + index of task in list, as arguments to callback?
         else:
             element_uuid = dpg.add_spacer()
-        print(finished)
+        # print(finished) # debug probably
         return (finished, element_uuid)
 
-    def setup_tasks_window(data):
+    def setup_tasks_window(data: dict):
         """Creates the main "window" that lists tasks and contains main user interface elements.
 
         Arguments:
             data -- the Python object containing the task list (read from a file using storage_api.py abstractions)
                 A dictionary of lists, each key is the name of the column.  Currently hardcoded to use columns "To Do", "In Progress", and "Done".
         """  # todo: document data format more exensively
-        primary_window = dpg.generate_uuid()
+        primary_window = (
+            dpg.generate_uuid()
+        )  # cannot be generated using with as syntax, because it is used outside the with block
 
         with dpg.window(tag=primary_window):
             with dpg.table(header_row=True):
@@ -248,8 +289,9 @@ if (
                 finished = {"To Do": False, "In Progress": False, "Done": False}
 
                 for row in range(
-                    0, sorted([len(data[d]) for d in data], reverse=True)[0] + 1
-                ):
+                    0,
+                    sorted([len(data[d]) for d in data], reverse=True)[0] + 1,
+                ):  # To ensure enough rows are created for each table column, gets the number of elements in each column and adds this to a list, sort this in descending order, get the largest element as it is now at index 0, and add 1 to it (for add task button)
                     with dpg.table_row():
                         for col in ("To Do", "In Progress", "Done"):
                             finished, elem = create_task_elem(
@@ -267,7 +309,7 @@ if (
             dpg.delete_item(window_tag)
             setup_tasks_window(data)  # create the actual main windoww
         else:
-            sys.exit()
+            sys.exit()  # cannot continue without file currently as there is no mechanism for manual saving (yet)
 
     try:
         data = storage_api.get_data()  # get the current tasks
@@ -297,6 +339,6 @@ if (
             title="Tasks", width=600, height=300
         )  # this is the window seen by the window manager, which dearpygui creates its own virtual "windows" in.
         dpg.setup_dearpygui()
-        dpg.show_viewport()
-        dpg.start_dearpygui()
-        dpg.destroy_context()
+        dpg.show_viewport()  # actually show the window seen by the wm
+        dpg.start_dearpygui()  # starts render loop (handled by dearpygui), blocks until window closed
+        dpg.destroy_context()  # clean up
