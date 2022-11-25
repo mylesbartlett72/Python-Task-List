@@ -1,9 +1,10 @@
 if (
     __name__ == "__main__"
 ):  # prevent the program from doing anything if it is imported (either accidentally or on purpose)
+    import sys
+
     import dearpygui.dearpygui as dpg
     import storage_api
-    import sys
 
     dpg.create_context()
 
@@ -144,6 +145,20 @@ if (
         primary_window: any,
         direction: bool = False,
     ):
+        """Moves a task a column left or right
+
+        Arguments:
+            col -- Initial column of task, can be one of ["To Do", "In Progress", "Done"]
+            row -- Row of initial task
+            task_name -- Name of task
+            task_content -- Content (i.e. description or details) of task
+            task_window -- Task window as dearpygui object tag.  Deleted automatically.
+            task_list -- Task list file as python object.
+            primary_window -- The primary window as a dearpygui object tag.  Deleted and automatically recreated.
+
+        Keyword Arguments:
+            direction -- False: column left, True: column right.  Only checked if col is "In Progress" (default: {False})
+        """
         if col == "To Do":
             add_new_task(
                 "In Progress",
