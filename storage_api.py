@@ -1,12 +1,15 @@
 # Abstracts Python's JSON module.
 
-import json  # should be compatible with simplejson as well, can theoretically be replaced with "import simplejson as json" without breaking anything.
+# should be compatible with simplejson as well, can theoretically be replaced with
+# "import simplejson as json"
+# without breaking anything.
+import json
 
 # constants
-DEFAULT_FILE_NAME = (
-    ".tasks.json"  # the file name used by the functions if no file name is passed
-)
-DEFAULT_FILE_CONTENT = '{"To Do": [], "In Progress": [], "Done": []}'  # the content written to a newly created file if no content is passed
+# the file name used by the functions if no file name is passed
+DEFAULT_FILE_NAME = ".tasks.json"
+# the content written to a newly created file if no content is passed
+DEFAULT_FILE_CONTENT = '{"To Do": [], "In Progress": [], "Done": []}'
 
 
 def get_data(filename: str = DEFAULT_FILE_NAME) -> any:
@@ -23,7 +26,8 @@ def get_data(filename: str = DEFAULT_FILE_NAME) -> any:
 
 
 def write_data(data: any, filename: str = DEFAULT_FILE_NAME) -> None:
-    """Convert a Python object to a JSON string and write this to a file.  Note any existing content will be overwritten.
+    """Convert a Python object to a JSON string and write this to a file.  Note any
+    existing content will be overwritten.
 
     Arguments:
         data -- The Python object to convert to a JSON string and store
@@ -41,10 +45,12 @@ def create_file(
     """Create a new file (note that if the file exists it will be overwritten)
 
     Keyword Arguments:
-        filename -- The name of the file to create/overwrite (default: {DEFAULT_FILE_NAME})
-        file_content -- The content to write to the file (default: {DEFAULT_FILE_CONTENT})
+        filename -- The name of the file to create/overwrite
+        (default:{DEFAULT_FILE_NAME})
+        file_content -- The content to write to the file
+        (default: {DEFAULT_FILE_CONTENT})
     """
     with open(filename, "w") as tasks:
-        tasks.write(
-            file_content
-        )  # more efficient than loading the string to a JSON object and then dumping the JSON object to a file.
+        # more efficient than loading the string to a JSON object and then dumping the
+        # JSON object to a file.
+        tasks.write(file_content)
