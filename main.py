@@ -1,6 +1,8 @@
 """Module handling GUI.
 
 This is not supposed to be imported
+
+This module does not take any arguments.
 """
 
 # NOTICE TO MAINTAINERS
@@ -30,7 +32,7 @@ if __name__ == "__main__":
         handle_window_mgmt: bool = True,
         handle_storage_mgmt: bool = True,
     ):  # copy new arguemnts to delete task and potentially use in task update
-        """Adds a new task to the task list.
+        """Add a new task to the task list.
 
         Arguments:
             list_name -- The name of the list to add a task to
@@ -69,7 +71,7 @@ if __name__ == "__main__":
             return tasks
 
     def create_new_task_window(list_name: str, tasks: dict, primary_window: any):
-        """Creates a "add task" window.
+        """Create an "add task" window.
 
         Arguments:
             list_name -- Name of task list (hardcoded to one of "To Do", "In Progress", "Done" elsewhere)
@@ -110,7 +112,7 @@ if __name__ == "__main__":
         tasks: dict,
         primary_window: any,
     ):
-        """Edits an existing task.
+        """Edit an existing task.
 
         Arguments:
             col -- The column name of the task to edit
@@ -132,7 +134,7 @@ if __name__ == "__main__":
     def delete_task(
         col: str, row: int, edit_task_window: any, tasks: dict, primary_window: any
     ):
-        """Deletes a task.
+        """Delete a task.
 
         Arguments:
             col -- Column of task
@@ -157,7 +159,7 @@ if __name__ == "__main__":
         primary_window: any,
         direction: bool = False,
     ):
-        """Moves a task a column left or right.
+        """Move a task a column left or right.
 
         Arguments:
             col -- Initial column of task, can be one of ["To Do", "In Progress", "Done"]
@@ -218,7 +220,7 @@ if __name__ == "__main__":
         task_list: dict,
         primary_window: any,
     ):
-        """Creates the dialog window for a task (created when a task is clicked on).
+        """Create the dialog window for a task (created when a task is clicked on).
 
         Arguments:
             col -- Column of the task
@@ -305,7 +307,7 @@ if __name__ == "__main__":
     def create_task_elem(
         col: str, row: int, finished: dict, tasks: dict, primary_window: any
     ) -> tuple:
-        """Creates an element in the main window's table, either a button to bring up a task edit window, a "add new task" button, or a spacer.
+        """Create an element in the main window's table, either a button to bring up a task edit window, a "add new task" button, or a spacer.
 
         Arguments:
             col -- The column of the current task
@@ -353,7 +355,7 @@ if __name__ == "__main__":
         return (finished, element_uuid)
 
     def setup_tasks_window(data: dict):
-        """Creates the main "window" that lists tasks and contains main user interface elements.
+        """Create the main "window" that lists tasks and contains main user interface elements.
 
         Arguments:
             data -- the Python object containing the task list (read from a file using storage_api.py abstractions)
@@ -388,7 +390,7 @@ if __name__ == "__main__":
         dpg.set_primary_window(primary_window, True)
 
     def no_file_window_btn_callback(create_file: bool, window_tag: any):
-        """Callback for buttons in the "file not found" window.
+        """Run callback for buttons in the "file not found" window.
 
         Arguments:
             create_file -- Which button was clicked i.e. do we create a file or just quit?
