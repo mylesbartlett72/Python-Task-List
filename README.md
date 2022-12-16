@@ -19,7 +19,7 @@ Use requirements-dev.txt instead of requirements.txt if developing.
 Run
 ```shell
 spam@eggs:~$ cd /path/to/the/cloned/repository
-spam@eggs:~$ /path/to/your/python main.py
+spam@eggs:~$ /path/to/your/python src/Python-Task-List/main.py
 ```
 
 Data is stored in .tasks.json in the cloned repository
