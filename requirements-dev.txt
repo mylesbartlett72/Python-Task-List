@@ -1,0 +1,6 @@
+dearpygui
+pre-commit
+black
+isort
+pydocstyle
+flake8
