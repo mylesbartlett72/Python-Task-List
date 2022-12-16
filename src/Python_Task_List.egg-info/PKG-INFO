@@ -1,0 +1,37 @@
+Metadata-Version: 2.1
+Name: Python-Task-List
+Version: 3.0.0
+Summary: A task list application, written in Python3 using the dearpygui library
+Author-email: Myles Bartlett <myles@bangsparks.com>
+Project-URL: Homepage, https://github.com/mylesbartlett72/Python-Task-List
+Project-URL: Bug Tracker, https://github.com/mylesbartlett72/Python-Task-List/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Python-Task-List
+
+A task list application, written in Python3 using the dearpygui library
+
+## Installation
+
+1)Clone the repository<br>
+2)Dependencies<br>
+Run
+```shell
+spam@eggs:~$ pip3 install -r /path/to/the/cloned/repository/requirements.txt
+```
+to install dependencies<br>
+You may need to substitute pip3 for pip on Windows-based systems.  To use a specific version of python from your system: `/path/to/your/python -m pip` can be used
+
+## To start
+Run
+```shell
+spam@eggs:~$ cd /path/to/the/cloned/repository
+spam@eggs:~$ /path/to/your/python main.py
+```
+
+Data is stored in .tasks.json in the cloned repository

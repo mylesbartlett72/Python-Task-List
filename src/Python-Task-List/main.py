@@ -15,8 +15,9 @@ This module does not take any arguments.
 if __name__ == "__main__":
     import sys
 
+    import storage_api as storage_api
+
     import dearpygui.dearpygui as dpg
-    import storage_api
 
     dpg.create_context()
 

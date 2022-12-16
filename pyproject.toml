@@ -6,3 +6,26 @@ profile = 'black'
 
 [tool.pydocstyle]
 convention = "pep257"
+
+[project]
+name = "Python-Task-List"
+version = "3.0.0"
+authors = [
+  { name="Myles Bartlett", email="myles@bangsparks.com" },
+]
+description = "A task list application, written in Python3 using the dearpygui library"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mylesbartlett72/Python-Task-List"
+"Bug Tracker" = "https://github.com/mylesbartlett72/Python-Task-List/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
