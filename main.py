@@ -65,9 +65,8 @@ if __name__ == "__main__":
             # turns out this doesnt cause infinite recursion since setup_tasks_window
             # exits - the callbacks are dealt with on a separate thread
             setup_tasks_window(tasks)
-        if (
-            not handle_storage_mgmt
-        ):  # moved to allow handling window management but not storage management.
+        # moved to allow handling window management but not storage management.
+        if not handle_storage_mgmt:
             return tasks
 
     def create_new_task_window(list_name: str, tasks: dict, primary_window: any):
@@ -284,7 +283,8 @@ if __name__ == "__main__":
                                 primary_window,
                             ),
                         )
-                    dpg.add_text("Move")  # fills the column in the middle
+                    # fills the column in the middle
+                    dpg.add_text("Move")
                     if col == "Done":
                         # cannot move task right as there is no column on the right
                         dpg.add_spacer()
@@ -329,7 +329,6 @@ if __name__ == "__main__":
             except IndexError:
                 task = None
                 content = None
-            # print(task) # debug probably
             if task is None:
                 element_uuid = dpg.add_button(
                     label="Add Task",
@@ -351,7 +350,6 @@ if __name__ == "__main__":
                 )
         else:
             element_uuid = dpg.add_spacer()
-        # print(finished) # debug probably
         return (finished, element_uuid)
 
     def setup_tasks_window(data: dict):
@@ -436,8 +434,11 @@ if __name__ == "__main__":
         # this is the window seen by the window manager, which dearpygui creates its own
         # virtual "windows" in.
         dpg.create_viewport(title="Tasks", width=600, height=300)
+        # init dearpygui
         dpg.setup_dearpygui()
-        dpg.show_viewport()  # actually show the window seen by the wm
+        # actually show the window seen by the wm
+        dpg.show_viewport()
         # starts render loop (handled by dearpygui), blocks until window closed
         dpg.start_dearpygui()
-        dpg.destroy_context()  # clean up
+        # clean up
+        dpg.destroy_context()
