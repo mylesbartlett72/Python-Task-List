@@ -1,7 +1,0 @@
-dearpygui==1.6.2
-pre-commit
-black
-isort
-pydocstyle
-flake8
-build
