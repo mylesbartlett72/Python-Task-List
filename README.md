@@ -11,9 +11,9 @@ Run
 spam@eggs:~$ pip3 install -r /path/to/the/cloned/repository/requirements.txt
 ```
 to install dependencies<br>
-You may need to substitute pip3 for pip on Windows-based systems.  To use a specific version of python from your system: `/path/to/your/python -m pip` can be used
+You may need to substitute `pip3` for `pip` on Windows-based systems.  To use a specific version of python from your system: `/path/to/your/python -m pip` can be used instead of `pip3`
 
-Use requirements-dev.txt instead of requirements.txt if developing.
+Use `requirements-dev.txt` instead of `requirements.txt` if developing.
 
 ## To start
 Run
