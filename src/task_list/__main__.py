@@ -15,9 +15,15 @@ This module does not take any arguments.
 if __name__ == "__main__":
     import sys
 
-    import storage_api as storage_api
-
     import dearpygui.dearpygui as dpg
+
+    try:
+        # only works if running from source
+        import storage_api
+
+    except ModuleNotFoundError:
+        # running from python -m with installed wheel
+        import task_list.storage_api as storage_api
 
     dpg.create_context()
 

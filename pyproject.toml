@@ -8,8 +8,8 @@ profile = 'black'
 convention = "pep257"
 
 [project]
-name = "Python-Task-List"
-version = "3.0.0"
+name = "task_list"
+version = "4.0.0"
 authors = [
   { name="Myles Bartlett", email="myles@bangsparks.com" },
 ]

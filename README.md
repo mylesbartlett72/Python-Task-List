@@ -1,4 +1,4 @@
-# Python-Task-List
+# Python Task List
 
 A task list application, written in Python3 using the dearpygui library
 
@@ -16,7 +16,7 @@ NOTE: You may need to substitute `pip3` for `pip` on Windows-based systems.  To 
 Run
 ```shell
 spam@eggs:~$ cd /path/to/the/cloned/repository
-spam@eggs:~$ /path/to/your/python src/Python-Task-List/main.py
+spam@eggs:~$ /path/to/your/python src/task_list/__main__.py
 ```
 
 In this case, data is stored in .tasks.json in the root of the cloned repository.  .tasks.json will be searched for and written to the current working directory.
