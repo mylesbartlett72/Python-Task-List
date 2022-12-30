@@ -2,7 +2,7 @@
 
 A task list application, written in Python3 using the dearpygui library
 
-## Installation
+## Installation from source
 
 It is suggested that a virtual environment is used, although this is not required.
 
@@ -20,3 +20,11 @@ spam@eggs:~$ /path/to/your/python src/Python-Task-List/main.py
 ```
 
 In this case, data is stored in .tasks.json in the root of the cloned repository.  .tasks.json will be searched for and written to the current working directory.
+
+## Building packages
+Run
+```shell
+spam@eggs:~$ cd /path/to/the/cloned/repository
+spam@eggs:~$ /path/to/your/python -m build .
+```
+Built packages will be output to the dist directory.
