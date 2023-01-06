@@ -2,17 +2,27 @@
 
 A task list application, written in Python3 using the dearpygui library
 
-## Installing as a binary
+## Installing as a binary (PyPI)
 
 NOTE: While binary packages should work, the dependency management has not been tested!  Please file an issue report if you encounter problems.
 
-Run 
+Run
+```shell
+spam@eggs:~$ pip3 install dearpygui-task-list
+```
+NOTE: You may need to substitute `pip3` for `pip` on Windows-based systems.  To use a specific version of python from your system: `/path/to/your/python -m pip` can be used instead of `pip3`
+
+## Installing as a binary (downloaded)
+
+NOTE: While binary packages should work, the dependency management has not been tested!  Please file an issue report if you encounter problems.
+
+Run
 ```shell
 spam@eggs:~$ pip3 install /path/to/the/downloaded/wheel.whl
 ```
 NOTE: You may need to substitute `pip3` for `pip` on Windows-based systems.  To use a specific version of python from your system: `/path/to/your/python -m pip` can be used instead of `pip3`
 
-### To start (installation as a binary)
+### To start (installation as a binary) (any binary source)
 Run
 ```shell
 spam@eggs:~$ /path/to/your/python -m task_list
@@ -45,4 +55,3 @@ spam@eggs:~$ cd /path/to/the/cloned/repository
 spam@eggs:~$ /path/to/your/python -m build .
 ```
 Built packages will be output to the dist directory.
-
