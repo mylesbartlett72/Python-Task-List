@@ -8,7 +8,7 @@ profile = 'black'
 convention = "pep257"
 
 [project]
-name = "task_list"
+name = "dearpygui_task_list"
 version = "4.0.0"
 authors = [
   { name="Myles Bartlett", email="myles@bangsparks.com" },

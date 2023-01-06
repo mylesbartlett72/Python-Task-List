@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/dearpygui_task_list.egg-info/PKG-INFO
+src/dearpygui_task_list.egg-info/SOURCES.txt
+src/dearpygui_task_list.egg-info/dependency_links.txt
+src/dearpygui_task_list.egg-info/top_level.txt
+src/task_list/__init__.py
+src/task_list/__main__.py
+src/task_list/storage_api.py
